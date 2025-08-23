@@ -11,7 +11,7 @@ import (
 )
 
 func TestProblemJSON(t *testing.T) {
-	test.ColorEnabled(true) // Force colour for diffs
+	test.ColorEnabled(os.Getenv("CI") == "") // Force colour for diffs locally
 
 	// TODO(@FollowTheProcess): Use snapshot here
 	tests := []struct {
