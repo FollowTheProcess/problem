@@ -20,3 +20,4 @@ jobs:
     uses: FollowTheProcess/ci/.github/workflows/Go.yml@v3
     with:
       linter: golangci-lint
+      env: '{"GOEXPERIMENT": "jsonv2"}'
