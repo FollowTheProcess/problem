@@ -1,0 +1,14 @@
+# Changes here will be overwritten by Copier
+_commit: v0.49.1
+_src_path: gh:FollowTheProcess/go-template
+author_name: Tom Fleet
+dependency_bot: renovate
+description: RFC-7807 Problem JSON structure in Go
+github_url: https://github.com/FollowTheProcess/problem
+github_username: FollowTheProcess
+license: MIT
+linter: golangci-lint
+module_path: go.followtheprocess.codes/problem
+project_name: problem
+project_slug: problem
+project_type: library
