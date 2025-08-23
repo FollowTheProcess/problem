@@ -60,7 +60,7 @@ func TestProblemJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := json.Marshal(tt.problem, jsontext.WithIndent("  "))
+			got, err := json.Marshal(tt.problem, jsontext.WithIndent("  "), json.Deterministic(true))
 			test.Ok(t, err)
 
 			// MarshalIndent doesn't add a newline at the end
