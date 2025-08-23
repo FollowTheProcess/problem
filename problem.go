@@ -1,3 +1,5 @@
+//go:build goexperiment.jsonv2
+
 // Package problem provides a data structure for an [RFC-7807] "problem" used in HTTP APIs.
 //
 // HTTP status codes are sometimes not sufficient to convey enough information about an
@@ -27,6 +29,9 @@ package problem // import "go.followtheprocess.codes/problem"
 // ContentType is the value for the 'Content-Type' HTTP header for a problem JSON response.
 const ContentType = "application/problem+json"
 
+// TODO(@FollowTheProcess): See if I can do some custom marshalling/unmarshalling tricks
+// to e.g. populate Type with 'about:blank' if it's empty etc.
+
 // Problem represents an [RFC-7807] problem.
 //
 // [RFC-7807]: https://datatracker.ietf.org/doc/html/rfc7807
@@ -35,7 +40,7 @@ type Problem struct {
 	//
 	// Clients consuming problem details MUST ignore any such extensions that they don't recognize;
 	// this allows problem types to evolve and include additional information in the future.
-	Extra map[string]any `json:",inline,omitempty"` //nolint:revive // inline struct tag is fine in Go 1.25+
+	Extra map[string]any `json:",inline"` //nolint:revive // inline struct tag is fine in Go 1.25+
 
 	// Type is a URI reference that identifies the problem type.
 	//
