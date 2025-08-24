@@ -18,6 +18,9 @@
 
 ## Installation
 
+> [!WARNING]
+> This module requires the Go 1.25 jsonv2 experiment: `GOEXPERIMENT=jsonv2`
+
 ```shell
 go get go.followtheprocess.codes/problem@latest
 ```
