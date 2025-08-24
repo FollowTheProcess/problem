@@ -26,7 +26,6 @@
 // [RFC-7807]: https://datatracker.ietf.org/doc/html/rfc7807
 package problem // import "go.followtheprocess.codes/problem"
 
-// ContentType is the value for the 'Content-Type' HTTP header for a problem JSON response.
 const ContentType = "application/problem+json"
 
 // TODO(@FollowTheProcess): See if I can do some custom marshalling/unmarshalling tricks
@@ -51,7 +50,7 @@ type Problem struct {
 	// Note that Type may be a relative URI, in which case it should be interpreted as relative
 	// to the server's base URI.
 	//
-	// If Type is empty, a default of 'about:blank' is used.  When "about:blank" is used, the title SHOULD
+	// If Type is empty, a default of 'about:blank' SHOULD be used. When "about:blank" is used, the title SHOULD
 	// be the same as the recommended HTTP status phrase for that code (e.g., "Not Found" for 404, and so on),
 	// although it MAY be localized to suit client preferences (expressed with the Accept-Language request header).
 	//
