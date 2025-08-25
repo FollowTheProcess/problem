@@ -63,9 +63,6 @@ func TestProblemJSON(t *testing.T) {
 			got, err := json.Marshal(tt.problem, jsontext.WithIndent("  "), json.Deterministic(true))
 			test.Ok(t, err)
 
-			// MarshalIndent doesn't add a newline at the end
-			got = append(got, '\n')
-
 			golden := filepath.Join("testdata", tt.golden)
 
 			if *update {
