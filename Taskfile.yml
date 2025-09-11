@@ -38,8 +38,6 @@ tasks:
     cmds:
       - go test -race ./... {{ .CLI_ARGS }}
 
-  
-
   bench:
     desc: Run all project benchmarks
     sources:
@@ -100,5 +98,3 @@ tasks:
     cmds:
       - go get -u ./...
       - go mod tidy
-
-  

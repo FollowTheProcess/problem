@@ -1,5 +1,3 @@
-//go:build goexperiment.jsonv2
-
 package problem_test
 
 import (
