@@ -194,6 +194,8 @@ func Status(status int) Option {
 //
 // Clients consuming problem details MUST ignore any such extensions that they don't recognize;
 // this allows problem types to evolve and include additional information in the future.
+//
+//	prob := problem.New(problem.Extra("account_id", 123456))
 func Extra(key string, value any) Option {
 	return func(p *Problem) {
 		// In case it hasn't been initialised yet
@@ -216,6 +218,8 @@ func Extra(key string, value any) Option {
 //
 // Clients consuming problem details MUST ignore any such extensions that they don't recognize;
 // this allows problem types to evolve and include additional information in the future.
+//
+//	prob := problem.New(problem.ExtraMap(map[string]any{"account_id": 123456}))
 func ExtraMap(extra map[string]any) Option {
 	return func(p *Problem) {
 		p.Extra = extra
