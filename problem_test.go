@@ -29,6 +29,11 @@ func TestProblemJSON(t *testing.T) {
 			golden:  "empty.json",
 		},
 		{
+			name:    "empty new",
+			problem: problem.New(),
+			golden:  "empty-new.json", // Not the same as empty as `type` defaults to "about:blank"
+		},
+		{
 			name: "no extra",
 			problem: problem.Problem{
 				Type:     "https://example.com/probs/out-of-credit",
@@ -38,6 +43,17 @@ func TestProblemJSON(t *testing.T) {
 				Status:   http.StatusBadRequest,
 			},
 			golden: "no-extra.json",
+		},
+		{
+			name: "no extra new",
+			problem: problem.New(
+				problem.Type("https://example.com/probs/out-of-credit"),
+				problem.Title("Not enough credit"),
+				problem.Detail("Your current balance is 30, but that costs 50"),
+				problem.Instance("/account/12345/msgs/abc"),
+				problem.Status(http.StatusBadRequest),
+			),
+			golden: "no-extra.json", // Should serialize exactly the same
 		},
 		{
 			name: "with extra",
@@ -53,6 +69,34 @@ func TestProblemJSON(t *testing.T) {
 				},
 			},
 			golden: "with-extra.json",
+		},
+		{
+			name: "with extra new",
+			problem: problem.New(
+				problem.Type("https://example.com/probs/out-of-credit"),
+				problem.Title("Not enough credit"),
+				problem.Detail("Your current balance is 30, but that costs 50"),
+				problem.Instance("/account/12345/msgs/abc"),
+				problem.Status(http.StatusBadRequest),
+				problem.Extra("balance", 30),
+				problem.Extra("accounts", []string{"/accounts/12345", "/accounts/67890"}),
+			),
+			golden: "with-extra.json", // Should serialize exactly the same
+		},
+		{
+			name: "with extra map new",
+			problem: problem.New(
+				problem.Type("https://example.com/probs/out-of-credit"),
+				problem.Title("Not enough credit"),
+				problem.Detail("Your current balance is 30, but that costs 50"),
+				problem.Instance("/account/12345/msgs/abc"),
+				problem.Status(http.StatusBadRequest),
+				problem.ExtraMap(map[string]any{
+					"balance":  30,
+					"accounts": []string{"/accounts/12345", "/accounts/67890"},
+				}),
+			),
+			golden: "with-extra.json", // Should serialize exactly the same
 		},
 	}
 
