@@ -24,6 +24,8 @@
 // [RFC-7807]: https://datatracker.ietf.org/doc/html/rfc7807
 package problem // import "go.followtheprocess.codes/problem"
 
+// TODO(@FollowTheProcess): Like a http helper or something? i.e. `problem.Response`
+
 // ContentType is the value for the HTTP 'Content-Type' header that signifies an RFC-7807 problem.
 const ContentType = "application/problem+json"
 
