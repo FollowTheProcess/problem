@@ -42,12 +42,10 @@ linters:
     - varnamelen # Lots of false positives of things that are fine
     - wrapcheck # Not every error must be wrapped
     - wsl # Very aggressive, some of this I like but tend to do anyway
-    - wsl_v5 # As above, just newer version
 
   exclusions:
     presets:
       # See https://golangci-lint.run/usage/false-positives/#exclusion-presets
-      - comments # Revive in particular has lots of false positives
       - std-error-handling
       - common-false-positives
     rules:
