@@ -142,6 +142,16 @@ func TestRespond(t *testing.T) {
 			status: http.StatusTeapot,
 			body:   `{"type":"about:blank","status":418}`,
 		},
+		{
+			name: "type and detail",
+			options: []problem.Option{
+				problem.Type("https://example.com/problems/invalid"),
+				problem.Detail("That thing you provided was not valid"),
+				problem.Status(http.StatusBadRequest),
+			},
+			status: http.StatusBadRequest,
+			body:   `{"type":"https://example.com/problems/invalid","detail":"That thing you provided was not valid","status":400}`,
+		},
 	}
 
 	for _, tt := range tests {
