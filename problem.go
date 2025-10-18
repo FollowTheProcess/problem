@@ -24,7 +24,11 @@
 // [RFC-7807]: https://datatracker.ietf.org/doc/html/rfc7807
 package problem // import "go.followtheprocess.codes/problem"
 
-// TODO(@FollowTheProcess): Like a http helper or something? i.e. `problem.Response`
+import (
+	"encoding/json/v2"
+	"fmt"
+	"net/http"
+)
 
 // ContentType is the value for the HTTP 'Content-Type' header that signifies an RFC-7807 problem.
 const ContentType = "application/problem+json"
@@ -105,6 +109,74 @@ func New(options ...Option) Problem {
 	}
 
 	return problem
+}
+
+// Respond is a convenience function for responding to a HTTP request with a [Problem].
+//
+// It sets the Content-Type response header to application/problem+json, and if the
+// Status is non-zero, sets that status code on the response and marshals
+// the problem to JSON and writes it to w.
+//
+//	func Handle(w http.ResponseWriter, r *http.Request) {
+//		problem.Respond(
+//			w,
+//			problem.Title("Uh oh"),
+//			problem.Detail("A thing went wrong"),
+//			problem.Status(http.StatusTeapot),
+//		)
+//	}
+//
+// Respond creates a new [Problem] with the given options for each call, if you want to reuse
+// generic problems across multiple calls, create the problem elsewhere and use [Problem.Respond].
+//
+// If JSON marshalling fails, the following is written to w with a status code of 500:
+//
+//	{
+//	  "title": "about:blank",
+//	  "detail": "Failed to generate problem response",
+//	  "status": 500
+//	}
+func Respond(w http.ResponseWriter, options ...Option) {
+	prob := New(options...)
+	prob.Respond(w)
+}
+
+// Respond is a convenience method for responding to a HTTP request with the calling [Problem].
+//
+// It sets the Content-Type response header to application/problem+json, and if the
+// Status is non-zero, sets that status code on the response and marshals
+// the problem to JSON and writes it to w.
+//
+//	func Handle(w http.ResponseWriter, r *http.Request) {
+//		// You could also use problem.New
+//		prob := problem.Problem{
+//			Title:  "Uh oh",
+//			Detail: "A thing went wrong",
+//			Status: http.StatusTeapot,
+//		}
+//		prob.Respond(w)
+//	}
+//
+// For a more convenient API when generating a problem per request, use [Respond].
+//
+// If JSON marshalling fails, the following is written to w with a status code of 500:
+//
+//	{
+//	  "title": "about:blank",
+//	  "detail": "Failed to generate problem response",
+//	  "status": 500
+//	}
+func (p Problem) Respond(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", ContentType)
+
+	if p.Status != 0 {
+		w.WriteHeader(p.Status)
+	}
+
+	if err := json.MarshalWrite(w, p, json.Deterministic(true)); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, `{"type":"about:blank","detail":"Failed to generate error response","status":500}`)
+	}
 }
 
 // Option is a functional option passed to [New] in order to modify a [Problem].

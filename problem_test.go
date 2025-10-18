@@ -4,7 +4,9 @@ import (
 	"encoding/json/jsontext"
 	"encoding/json/v2"
 	"flag"
+	"io"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"testing"
@@ -115,6 +117,62 @@ func TestProblemJSON(t *testing.T) {
 			test.Ok(t, err)
 
 			test.DiffBytes(t, got, want)
+		})
+	}
+}
+
+func TestRespond(t *testing.T) {
+	tests := []struct {
+		name    string           // Name of the test case
+		body    string           // Expected JSON body
+		options []problem.Option // Options to pass to Respond
+		status  int              // Expected HTTP status on the response
+	}{
+		{
+			name:    "empty",
+			options: []problem.Option{},
+			status:  http.StatusOK, // If w.WriteHeader isn't called explicitly, it defaults to 200
+			body:    `{"type":"about:blank"}`,
+		},
+		{
+			name: "teapot",
+			options: []problem.Option{
+				problem.Status(http.StatusTeapot),
+			},
+			status: http.StatusTeapot,
+			body:   `{"type":"about:blank","status":418}`,
+		},
+		{
+			name: "type and detail",
+			options: []problem.Option{
+				problem.Type("https://example.com/problems/invalid"),
+				problem.Detail("That thing you provided was not valid"),
+				problem.Status(http.StatusBadRequest),
+			},
+			status: http.StatusBadRequest,
+			body:   `{"type":"https://example.com/problems/invalid","detail":"That thing you provided was not valid","status":400}`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			handler := func(w http.ResponseWriter, _ *http.Request) {
+				problem.Respond(w, tt.options...)
+			}
+
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			w := httptest.NewRecorder()
+			handler(w, req)
+
+			res := w.Result()
+			defer res.Body.Close()
+
+			test.Equal(t, res.StatusCode, tt.status)
+
+			body, err := io.ReadAll(res.Body)
+			test.Ok(t, err)
+
+			test.DiffBytes(t, body, []byte(tt.body))
 		})
 	}
 }

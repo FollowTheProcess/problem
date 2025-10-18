@@ -21,3 +21,4 @@ jobs:
     with:
       linter: golangci-lint
       env: '{"GOEXPERIMENT": "jsonv2"}'
+      vulncheck: false # https://github.com/golang/go/issues/73871
