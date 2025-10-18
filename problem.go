@@ -114,7 +114,7 @@ func New(options ...Option) Problem {
 // Respond is a convenience function for responding to a HTTP request with a [Problem].
 //
 // It sets the Content-Type response header to application/problem+json, and if the
-// [Problem.Status] is non-zero, sets that status code on the response and marshals
+// Status is non-zero, sets that status code on the response and marshals
 // the problem to JSON and writes it to w.
 //
 //	func Handle(w http.ResponseWriter, r *http.Request) {
@@ -144,7 +144,7 @@ func Respond(w http.ResponseWriter, options ...Option) {
 // Respond is a convenience method for responding to a HTTP request with the calling [Problem].
 //
 // It sets the Content-Type response header to application/problem+json, and if the
-// [Problem.Status] is non-zero, sets that status code on the response and marshals
+// Status is non-zero, sets that status code on the response and marshals
 // the problem to JSON and writes it to w.
 //
 //	func Handle(w http.ResponseWriter, r *http.Request) {
