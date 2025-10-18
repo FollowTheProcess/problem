@@ -43,10 +43,10 @@ Or you can use the `New` function with a bunch of options if you like:
 ```go
 prob := problem.New(
     problem.Type("https://example.com/probs/out-of-credit"),
-    problem.Title("Not enough credit")
-    problem.Detail("Your current balance is 30, but that costs 50")
+    problem.Title("Not enough credit"),
+    problem.Detail("Your current balance is 30, but that costs 50"),
     problem.Instance("/account/12345/msgs/abc"),
-    problem.Status(http.StatusBadRequest)
+    problem.Status(http.StatusBadRequest),
 )
 ```
 
@@ -85,12 +85,12 @@ Or with the `New` pattern:
 ```go
 prob := problem.New(
     problem.Type("https://example.com/probs/out-of-credit"),
-    problem.Title("Not enough credit")
-    problem.Detail("Your current balance is 30, but that costs 50")
+    problem.Title("Not enough credit"),
+    problem.Detail("Your current balance is 30, but that costs 50"),
     problem.Instance("/account/12345/msgs/abc"),
     problem.Status(http.StatusBadRequest),
     problem.Extra("balance", 30),
-    problem.Extra("accounts", []string{"/accounts/12345", "/accounts/67890"})
+    problem.Extra("accounts", []string{"/accounts/12345", "/accounts/67890"}),
 )
 ```
 
@@ -113,6 +113,41 @@ These will both serialize to the following JSON:
 
 > [!TIP]
 > There is also an `ExtraMap` to allow adding a whole map of extra variables in one go rather than one at a time as shown above
+
+### In HTTP Handlers
+
+The package also provides some helpers for use in HTTP services to quickly respond with a problem:
+
+```go
+package main
+
+import (
+	"net/http"
+
+	"go.followtheprocess.codes/problem"
+)
+
+func Bang(w http.ResponseWriter, r *http.Request) {
+	problem.Respond(
+		w,
+		problem.Title("Uh oh"),
+		problem.Detail("A thing went wrong"),
+		problem.Status(http.StatusBadRequest),
+	)
+}
+
+func main() {
+	http.HandleFunc("/", Bang)
+	http.ListenAndServe(":8080", nil)
+}
+````
+
+`Respond` will:
+
+- Set the `Status` code on the response
+- Write the `Content-Type` header as `application/problem+json`
+- Marshal the `Problem` as JSON to the `http.ResponseWriter`
+  - If that fails, a default problem is written instead
 
 ### Credits
 
