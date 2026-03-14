@@ -160,7 +160,7 @@ func TestRespond(t *testing.T) {
 				problem.Respond(w, tt.options...)
 			}
 
-			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req := httptest.NewRequestWithContext(t.Context(), http.MethodGet, "/", nil)
 			w := httptest.NewRecorder()
 			handler(w, req)
 
