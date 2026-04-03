@@ -174,7 +174,7 @@ func (p Problem) Respond(w http.ResponseWriter) {
 	}
 
 	if err := json.MarshalWrite(w, p, json.Deterministic(true)); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, `{"type":"about:blank","detail":"Failed to generate error response","status":500}`)
 	}
 }
