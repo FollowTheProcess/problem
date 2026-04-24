@@ -41,7 +41,7 @@ type Problem struct {
 	//
 	// Clients consuming problem details MUST ignore any such extensions that they don't recognize;
 	// this allows problem types to evolve and include additional information in the future.
-	Extra map[string]any `json:",inline"` //nolint:revive // inline struct tag is fine in Go 1.25+
+	Extra map[string]any `json:",inline"`
 
 	// Type is a URI reference that identifies the problem type.
 	//
