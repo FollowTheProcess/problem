@@ -13,6 +13,7 @@ dependencies:
 
 environment:
   GOEXPERIMENT: "jsonv2"
+  CGO_ENABLED: "0"
 
 steps:
   - name: Format
