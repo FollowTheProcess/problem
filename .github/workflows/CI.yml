@@ -19,6 +19,4 @@ jobs:
       contents: read
     uses: FollowTheProcess/ci/.github/workflows/Go.yml@v4
     with:
-      linter: golangci-lint
       env: '{"GOEXPERIMENT": "jsonv2"}'
-      vulncheck: false # https://github.com/golang/go/issues/73871
