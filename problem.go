@@ -28,6 +28,7 @@ import (
 	"encoding/json/v2"
 	"fmt"
 	"net/http"
+	"reflect"
 )
 
 // ContentType is the value for the HTTP 'Content-Type' header that signifies an RFC-7807 problem.
@@ -139,6 +140,37 @@ func New(options ...Option) Problem {
 func Respond(w http.ResponseWriter, options ...Option) {
 	prob := New(options...)
 	prob.Respond(w)
+}
+
+// Equal reports whether two [Problem] values are equal.
+//
+// Two problems are considered equal when all of their fields are identical.
+func Equal(a, b Problem) bool {
+	if a.Type != b.Type {
+		return false
+	}
+
+	if a.Title != b.Title {
+		return false
+	}
+
+	if a.Detail != b.Detail {
+		return false
+	}
+
+	if a.Instance != b.Instance {
+		return false
+	}
+
+	if a.Status != b.Status {
+		return false
+	}
+
+	if !reflect.DeepEqual(a.Extra, b.Extra) {
+		return false
+	}
+
+	return true
 }
 
 // Respond is a convenience method for responding to a HTTP request with the calling [Problem].
