@@ -176,3 +176,135 @@ func TestRespond(t *testing.T) {
 		})
 	}
 }
+
+func TestEqual(t *testing.T) {
+	tests := []struct {
+		name string          // Name of the test
+		a, b problem.Problem // Problems to compare
+		want bool            // Whether they should be equal
+	}{
+		{
+			name: "both empty",
+			a:    problem.Problem{},
+			b:    problem.Problem{},
+			want: true,
+		},
+		{
+			name: "a empty b not",
+			a:    problem.Problem{},
+			b: problem.Problem{
+				Type: "about:blank",
+			},
+			want: false,
+		},
+		{
+			name: "all fields equal",
+			a: problem.Problem{
+				Type:     "https://example.com/probs/out-of-credit",
+				Title:    "Not enough credit",
+				Detail:   "Your current balance is 30, but that costs 50",
+				Instance: "/account/12345/msgs/abc",
+				Status:   http.StatusBadRequest,
+			},
+			b: problem.Problem{
+				Type:     "https://example.com/probs/out-of-credit",
+				Title:    "Not enough credit",
+				Detail:   "Your current balance is 30, but that costs 50",
+				Instance: "/account/12345/msgs/abc",
+				Status:   http.StatusBadRequest,
+			},
+			want: true,
+		},
+		{
+			name: "differ by type",
+			a:    problem.Problem{Type: "about:blank"},
+			b:    problem.Problem{Type: "https://example.com/probs/out-of-credit"},
+			want: false,
+		},
+		{
+			name: "differ by title",
+			a:    problem.Problem{Title: "Not enough credit"},
+			b:    problem.Problem{Title: "Too much credit"},
+			want: false,
+		},
+		{
+			name: "differ by detail",
+			a:    problem.Problem{Detail: "Your current balance is 30, but that costs 50"},
+			b:    problem.Problem{Detail: "Your current balance is 30, but that costs 60"},
+			want: false,
+		},
+		{
+			name: "differ by instance",
+			a:    problem.Problem{Instance: "/account/12345/msgs/abc"},
+			b:    problem.Problem{Instance: "/account/67890/msgs/abc"},
+			want: false,
+		},
+		{
+			name: "differ by status",
+			a:    problem.Problem{Status: http.StatusBadRequest},
+			b:    problem.Problem{Status: http.StatusTeapot},
+			want: false,
+		},
+		{
+			name: "equal extra with slice values",
+			a: problem.Problem{
+				Extra: map[string]any{
+					"balance":  30,
+					"accounts": []string{"/accounts/12345", "/accounts/67890"},
+				},
+			},
+			b: problem.Problem{
+				Extra: map[string]any{
+					"balance":  30,
+					"accounts": []string{"/accounts/12345", "/accounts/67890"},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "equal extra with nested map values",
+			a: problem.Problem{
+				Extra: map[string]any{
+					"limits": map[string]any{"credit": 50, "overdraft": 10},
+				},
+			},
+			b: problem.Problem{
+				Extra: map[string]any{
+					"limits": map[string]any{"credit": 50, "overdraft": 10},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "differ by extra value",
+			a:    problem.Problem{Extra: map[string]any{"balance": 30}},
+			b:    problem.Problem{Extra: map[string]any{"balance": 40}},
+			want: false,
+		},
+		{
+			name: "differ by extra slice element",
+			a:    problem.Problem{Extra: map[string]any{"accounts": []string{"/accounts/12345"}}},
+			b:    problem.Problem{Extra: map[string]any{"accounts": []string{"/accounts/67890"}}},
+			want: false,
+		},
+		{
+			name: "one extra nil other populated",
+			a:    problem.Problem{},
+			b:    problem.Problem{Extra: map[string]any{"balance": 30}},
+			want: false,
+		},
+		{
+			name: "extra nil vs empty map",
+			a:    problem.Problem{Extra: nil},
+			b:    problem.Problem{Extra: map[string]any{}},
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := problem.Equal(tt.a, tt.b)
+			test.Equal(t, got, tt.want)
+		})
+	}
+}
