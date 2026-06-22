@@ -1,0 +1,1 @@
+{"type":"https://example.com/probs/out-of-credit","title":"Not enough credit","detail":"Your current balance is 30, but that costs 50","instance":"/account/12345/msgs/abc","status":400}

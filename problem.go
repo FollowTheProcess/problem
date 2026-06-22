@@ -34,6 +34,9 @@ import (
 // ContentType is the value for the HTTP 'Content-Type' header that signifies an RFC-7807 problem.
 const ContentType = "application/problem+json"
 
+// errResponse is what gets marshalled to response writers if for some reason JSON marshalling fails.
+const errResponse = `{"type":"about:blank","detail":"Failed to generate error response","status":500}`
+
 // Problem represents an [RFC-7807] problem.
 //
 // [RFC-7807]: https://datatracker.ietf.org/doc/html/rfc7807
@@ -207,8 +210,34 @@ func (p Problem) Respond(w http.ResponseWriter) {
 
 	if err := json.MarshalWrite(w, p, json.Deterministic(true)); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprint(w, `{"type":"about:blank","detail":"Failed to generate error response","status":500}`)
+		fmt.Fprint(w, errResponse)
 	}
+}
+
+// JSON returns the JSON encoding of the calling [Problem].
+//
+//	prob := problem.Problem{
+//		Title:  "Uh oh",
+//		Detail: "A thing went wrong",
+//		Status: http.StatusTeapot,
+//	}
+//
+//	prob.JSON()
+//
+// If JSON marshalling fails for some reason, the following is returned:
+//
+//	{
+//	  "title": "about:blank",
+//	  "detail": "Failed to generate problem response",
+//	  "status": 500
+//	}
+func (p Problem) JSON() []byte {
+	content, err := json.Marshal(p, json.Deterministic(true))
+	if err != nil {
+		return []byte(errResponse)
+	}
+
+	return content
 }
 
 // Option is a functional option passed to [New] in order to modify a [Problem].
