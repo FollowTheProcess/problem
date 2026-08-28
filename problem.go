@@ -22,7 +22,7 @@
 //	}
 //
 // [RFC-7807]: https://datatracker.ietf.org/doc/html/rfc7807
-package problem // import "go.followtheprocess.codes/problem"
+package problem
 
 import (
 	"encoding/json/v2"
@@ -45,7 +45,9 @@ type Problem struct {
 	//
 	// Clients consuming problem details MUST ignore any such extensions that they don't recognize;
 	// this allows problem types to evolve and include additional information in the future.
-	Extra map[string]any `json:",inline"`
+	//
+	//nolint:tagliatelle // It doesn't understand embed yet.
+	Extra map[string]any `json:",embed"`
 
 	// Type is a URI reference that identifies the problem type.
 	//

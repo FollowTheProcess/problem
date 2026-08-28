@@ -16,10 +16,6 @@ APIs will all be consistent 👌🏻
 
 ## Installation
 
-> [!WARNING]
-> This module requires the Go 1.25 jsonv2 experiment: `GOEXPERIMENT=jsonv2` in order to inline the `Extra` map when serializing
-> See <https://go.dev/blog/jsonv2-exp#experimenting-with-jsonv2>
-
 ```shell
 go get go.followtheprocess.codes/problem@latest
 ```
@@ -104,10 +100,7 @@ These will both serialize to the following JSON:
   "instance": "/account/12345/msgs/abc",
   "status": 400,
   "balance": 30,
-  "accounts": [
-    "/accounts/12345",
-    "/accounts/67890"
-  ]
+  "accounts": ["/accounts/12345", "/accounts/67890"]
 }
 ```
 
@@ -140,7 +133,7 @@ func main() {
 	http.HandleFunc("/", Bang)
 	http.ListenAndServe(":8080", nil)
 }
-````
+```
 
 `Respond` will:
 

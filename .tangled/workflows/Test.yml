@@ -8,7 +8,7 @@ engine: nixery
 
 dependencies:
   nixpkgs/nixpkgs-unstable:
-    - go
+    - go_1_27
   nixpkgs:
     - gcc  # Needed for CGO_ENABLED=1 (go test -race)
 
@@ -16,5 +16,4 @@ steps:
   - name: Test
     environment:
       CGO_ENABLED: "1"
-      GOEXPERIMENT: "jsonv2"
     command: go test -race ./...

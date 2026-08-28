@@ -1,6 +1,6 @@
 module go.followtheprocess.codes/problem
 
-go 1.26
+go 1.27
 
 require go.followtheprocess.codes/test v1.4.0
 
